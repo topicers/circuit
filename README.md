@@ -8,8 +8,8 @@ Solving very interesting task;)
 3. Learned how to use JUnit (in order to use TDD) and practiced with it in Idea, learned how to use code coverage function
 4. Read about TDD
 5. Thought about application architecture. Identified that statements can have 1 or 2 arguments. Decided to unify Gate by always using 2 argument variant.
-Decided to use one Gate calss and through delegation change algorithm of producing output result. In such way I have encapsulated what varies and added possibility to create different gate types in simple way.
-6. Created new project in Idea which use Gradle. Started to implement ideas from 4th step by writing code.
+Decided to use one Gate class and through delegation change algorithm of producing output result. In such way I have encapsulated what varies and added possibility to create different gate types in simple way.
+6. Created new project in Idea which use Gradle. Started to implement ideas from 5th step by writing code.
 7. Made first commit. It compiles and passes the tests. The purposes of the first commit were:
   - to show the sought process;
   - to implement the parsing code.
@@ -21,3 +21,6 @@ Decided to use one Gate calss and through delegation change algorithm of produci
   - Added comments
   - Added command-line arguments
 11. Wrote README file
+12. Read about Gradle. Updated build.gradle to:
+  - output test results to console as was specified in requirements
+  - add Main-Class attribute to manifest
