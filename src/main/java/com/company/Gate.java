@@ -3,9 +3,10 @@ package com.company;
 import java.util.function.BiFunction;
 
 /**
- * Created by І on 10.06.2016.
+ * This class represents gate, which has 2 input wires and 1 output wire. resultProducer defines how to calculate
+ * output signal.
  */
-class Gate {
+final class Gate {
     private final Wire input1;
     private final Wire input2;
     private final Wire output;
@@ -22,6 +23,7 @@ class Gate {
         return resultProducer;
     }
 
+    //we can calculate output signal only when we have 2 input signals
     void produceOutput() {
         if (input1.hasSignal() && input2.hasSignal())
         {

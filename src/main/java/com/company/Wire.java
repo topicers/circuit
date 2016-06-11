@@ -1,9 +1,9 @@
 package com.company;
 
 /**
- * Created by І on 10.06.2016.
+ * This class represents wire. Wire has signal, otherwise it has source in order to get signal in future
  */
-class Wire {
+final class Wire {
     private final String id;
     private Gate source;
     private Character signal;
@@ -16,8 +16,10 @@ class Wire {
         return source;
     }
 
+    //wire can have only one source
     void setSource(Gate source)
     {
+        if (this.source != null) throw new IllegalStateException("Attempt to overwrite source for gate id<"+id+">");
         this.source = source;
     }
 
@@ -25,10 +27,12 @@ class Wire {
         return signal;
     }
 
+    //signal for wire can be set only one time
     void setSignal(Character signal) {
-        if (hasSignal()) throw new IllegalStateException("Attempt to overwrite value for gate id<"+id+">");
+        if (hasSignal()) throw new IllegalStateException("Attempt to overwrite signal for gate id<"+id+">");
+        if (Main.IS_DEBUG) System.out.println("Set signal <"+((int)signal)+"> on wire <"+id+">");
+
         this.signal = signal;
-        System.out.println("Set signal <"+((int)signal)+"> on wire <"+id+">");
         this.source = null; //mark source for GC
     }
 
