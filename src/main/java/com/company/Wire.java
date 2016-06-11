@@ -3,40 +3,41 @@ package com.company;
 /**
  * Created by І on 10.06.2016.
  */
-public class Wire {
+class Wire {
     private final String id;
     private Gate source;
     private Character signal;
 
-    public Wire(String id) {
+    Wire(String id) {
         this.id = id;
     }
 
-    public Gate getSource() {
+    Gate getSource() {
         return source;
     }
 
-    public void setSource(Gate source)
+    void setSource(Gate source)
     {
         this.source = source;
     }
 
-    public Character getSignal() {
+    Character getSignal() {
         return signal;
     }
 
-    public void setSignal(Character signal) {
+    void setSignal(Character signal) {
         if (hasSignal()) throw new IllegalStateException("Attempt to overwrite value for gate id<"+id+">");
         this.signal = signal;
+        System.out.println("Set signal <"+((int)signal)+"> on wire <"+id+">");
         this.source = null; //mark source for GC
     }
 
-    public void process()
+    void process()
     {
         if (source != null) source.produceOutput();
     }
 
-    public boolean hasSignal() {
+    boolean hasSignal() {
         return (signal != null);
     }
 }

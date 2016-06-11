@@ -13,31 +13,68 @@ import static org.junit.Assert.*;
  */
 public class MainTest {
     @Test
+    public void processSampleFile() throws IOException
+    {
+        Main.main(null);
+        assertEquals(956, (int)Main.wires.get("a").getSignal());
+    }
+
+    @Test
     public void isInputFileExists() throws IOException
     {
         assertTrue(Files.exists(Paths.get(Main.IN_FILENAME)));
     }
 
     @Test
-    public void getWire()
+    public void getWireId()
     {
         assertEquals(Main.getWire("aaa"), Main.getWire("aaa"));
     }
 
     @Test
-    public void parseLineValue()
+    public void getWireConst()
     {
-        Main.parseLine("0 -> c");
-        assertEquals(0, (int)Main.wires.get("c").getSignal());
+        final Wire wire1 = Main.getWire("2");
+        final Wire wire2 = Main.getWire("2");
+
+        assertNotEquals(wire1, wire2);
+        assertEquals(2, (int)wire1.getSignal());
+        assertEquals(2, (int)wire2.getSignal());
     }
 
     @Test
-    public void parseLineNot()
+    public void parseLineValue()
+    {
+        Main.parseLine("0 -> c32");
+        Main.wires.get("c32").process();
+        assertEquals(0, (int)Main.wires.get("c32").getSignal());
+    }
+
+    @Test
+    public void parseLineWireToWire()
+    {
+        Main.parseLine("ld -> ls");
+        assertNotNull(Main.wires.get("ld"));
+        assertNotNull(Main.wires.get("ls"));
+        assertEquals(Main.sameResultProducer, Main.wires.get("ls").getSource().getResultProducer());
+    }
+
+    @Test
+    public void parseLineNotId()
     {
         Main.parseLine("NOT lk -> ll");
         assertNotNull(Main.wires.get("lk"));
         assertNotNull(Main.wires.get("ll"));
         assertEquals(Main.notResultProducer, Main.wires.get("ll").getSource().getResultProducer());
+    }
+
+    @Test
+    public void parseLineNotConst()
+    {
+        Main.parseLine("NOT 123 -> a50");
+        assertNotNull(Main.wires.get("a50"));
+        Main.wires.get("a50").process();
+        assertEquals(65412, (int)Main.wires.get("a50").getSignal());
     }
 
     @Test
@@ -51,6 +88,15 @@ public class MainTest {
     }
 
     @Test
+    public void parseLineOrConst()
+    {
+        Main.parseLine("123 OR 456 -> c15");
+        assertNotNull(Main.wires.get("c15"));
+        Main.wires.get("c15").process();
+        assertEquals(507, (int)Main.wires.get("c15").getSignal());
+    }
+
+    @Test
     public void parseLineAnd()
     {
         Main.parseLine("a2 AND b2 -> c2");
@@ -58,6 +104,15 @@ public class MainTest {
         assertNotNull(Main.wires.get("b2"));
         assertNotNull(Main.wires.get("c2"));
         assertEquals(Main.andResultProducer, Main.wires.get("c2").getSource().getResultProducer());
+    }
+
+    @Test
+    public void parseLineAndConst()
+    {
+        Main.parseLine("123 AND 456 -> c16");
+        assertNotNull(Main.wires.get("c16"));
+        Main.wires.get("c16").process();
+        assertEquals(72, (int)Main.wires.get("c16").getSignal());
     }
 
     @Test
@@ -71,6 +126,15 @@ public class MainTest {
     }
 
     @Test
+    public void parseLineRshiftConst()
+    {
+        Main.parseLine("456 RSHIFT 2 -> c17");
+        assertNotNull(Main.wires.get("c17"));
+        Main.wires.get("c17").process();
+        assertEquals(114, (int)Main.wires.get("c17").getSignal());
+    }
+
+    @Test
     public void parseLineLshift()
     {
         Main.parseLine("a4 LSHIFT b4 -> c4");
@@ -78,6 +142,15 @@ public class MainTest {
         assertNotNull(Main.wires.get("b4"));
         assertNotNull(Main.wires.get("c4"));
         assertEquals(Main.lShiftResultProducer, Main.wires.get("c4").getSource().getResultProducer());
+    }
+
+    @Test
+    public void parseLineLshiftConst()
+    {
+        Main.parseLine("123 LSHIFT 2 -> c18");
+        assertNotNull(Main.wires.get("c18"));
+        Main.wires.get("c18").process();
+        assertEquals(492, (int)Main.wires.get("c18").getSignal());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -153,13 +226,5 @@ public class MainTest {
         input1.setSignal((char)123);
 
         assertEquals((long)Main.notResultProducer.apply(input1, null), 65412);
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void wireTest()
-    {
-        Wire wire = new Wire("");
-        wire.setSignal((char)0);
-        wire.setSignal((char)0);
     }
 }

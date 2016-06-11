@@ -18,13 +18,29 @@ public class Main {
     static final BiFunction<Wire, Wire, Character> lShiftResultProducer = (input1, input2) -> (char)(input1.getSignal() << input2.getSignal());
     static final BiFunction<Wire, Wire, Character> rShiftResultProducer = (input1, input2) -> (char)(input1.getSignal() >> input2.getSignal());
     static final BiFunction<Wire, Wire, Character> notResultProducer = (input1, input2) -> (char)(~input1.getSignal());
+    static final BiFunction<Wire, Wire, Character> sameResultProducer = (input1, input2) -> input1.getSignal();
     static final Map<String, Wire> wires = new HashMap<>();
+    private static final Wire nullWire;
+
+    static {
+        nullWire = new Wire("");
+        nullWire.setSignal((char)0);
+    }
 
     public static void main(String[] args) throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(IN_FILENAME)))
         {
             lines.forEachOrdered(Main::parseLine);
         }
+
+        int counter = 0;
+        while(!wires.get("a").hasSignal())
+        {
+            System.out.println("-- Iteration #: "+(++counter));
+            wires.forEach((id, wire) -> wire.process());
+        }
+
+        System.out.println(((int)wires.get("a").getSignal()));
     }
 
     static void parseLine(String line)
@@ -34,37 +50,39 @@ public class Main {
         Wire outputWire;
         switch(operands.length)
         {
-            //parse line like: 0 -> c
             case 2:
+                //parse line like: 2 -> c, k -> c
                 outputWire = getWire(operands[1]);
-                outputWire.setSignal((char)Integer.parseInt(operands[0]));
+                outputWire.setSource(new Gate(getWire(operands[0]), nullWire, outputWire, sameResultProducer));
                 break;
-            //parse line like: NOT lk -> ll
+            //parse line like: NOT 2 -> ll, NOT lk -> ll
             case 3:
                 if (!operands[0].equals("NOT")) throw exception;
                 outputWire = getWire(operands[2]);
-                outputWire.setSource(new Gate(getWire(operands[1]), null, outputWire, notResultProducer));
+                outputWire.setSource(new Gate(getWire(operands[1]), nullWire, outputWire, notResultProducer));
                 break;
-            //parse line like: af OP ah -> ai
+            //parse line like: af OP ah -> ai, 2 OP ah -> ai, af OP 2 -> ai, 2 OP 2 -> ai
             case 4:
-                outputWire = getWire(operands[3]);
+                BiFunction<Wire, Wire, Character> resultProducer;
                 switch(operands[1])
                 {
                     case "OR":
-                        outputWire.setSource(new Gate(getWire(operands[0]), getWire(operands[2]), outputWire, orResultProducer));
+                        resultProducer = orResultProducer;
                         break;
                     case "AND":
-                        outputWire.setSource(new Gate(getWire(operands[0]), getWire(operands[2]), getWire(operands[3]), andResultProducer));
+                        resultProducer = andResultProducer;
                         break;
                     case "LSHIFT":
-                        outputWire.setSource(new Gate(getWire(operands[0]), getWire(operands[2]), getWire(operands[3]), lShiftResultProducer));
+                        resultProducer = lShiftResultProducer;
                         break;
                     case "RSHIFT":
-                        outputWire.setSource(new Gate(getWire(operands[0]), getWire(operands[2]), getWire(operands[3]), rShiftResultProducer));
+                        resultProducer = rShiftResultProducer;
                         break;
                     default:
                         throw exception;
                 }
+                outputWire = getWire(operands[3]);
+                outputWire.setSource(new Gate(getWire(operands[0]), getWire(operands[2]), outputWire, resultProducer));
                 break;
             default:
                 throw exception;
@@ -73,6 +91,16 @@ public class Main {
 
     static Wire getWire(String id)
     {
-        return wires.computeIfAbsent(id, Wire::new);
+        try
+        {
+            Character constantSignal = (char)Integer.parseInt(id);
+            Wire wire = new Wire(id);
+            wire.setSignal(constantSignal);
+            return wire;
+        }
+        catch(NumberFormatException e)
+        {
+            return wires.computeIfAbsent(id, Wire::new);
+        }
     }
 }
