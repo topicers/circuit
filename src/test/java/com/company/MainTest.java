@@ -62,7 +62,7 @@ public final class MainTest {
         Main.parseLine("a -> b");
         assertNotNull(Main.wiresToProcess.get("a"));
         assertNotNull(Main.wiresToProcess.get("b"));
-        assertEquals(Main.sameResultProducer, Main.wiresToProcess.get("b").getSource().getResultProducer());
+        assertEquals(ResultProducerFactory.getSameResultProducer(), Main.wiresToProcess.get("b").getSource().getResultProducer());
     }
 
     @Test
@@ -71,7 +71,7 @@ public final class MainTest {
         Main.parseLine("NOT a -> b");
         assertNotNull(Main.wiresToProcess.get("a"));
         assertNotNull(Main.wiresToProcess.get("b"));
-        assertEquals(Main.notResultProducer, Main.wiresToProcess.get("b").getSource().getResultProducer());
+        assertEquals(ResultProducerFactory.getNotResultProducer(), Main.wiresToProcess.get("b").getSource().getResultProducer());
     }
 
     @Test
@@ -90,7 +90,7 @@ public final class MainTest {
         assertNotNull(Main.wiresToProcess.get("a"));
         assertNotNull(Main.wiresToProcess.get("b"));
         assertNotNull(Main.wiresToProcess.get("c"));
-        assertEquals(Main.orResultProducer, Main.wiresToProcess.get("c").getSource().getResultProducer());
+        assertEquals(ResultProducerFactory.get2OperandsProducer("OR", new IllegalArgumentException("")), Main.wiresToProcess.get("c").getSource().getResultProducer());
     }
 
     @Test
@@ -109,7 +109,7 @@ public final class MainTest {
         assertNotNull(Main.wiresToProcess.get("a"));
         assertNotNull(Main.wiresToProcess.get("b"));
         assertNotNull(Main.wiresToProcess.get("c"));
-        assertEquals(Main.andResultProducer, Main.wiresToProcess.get("c").getSource().getResultProducer());
+        assertEquals(ResultProducerFactory.get2OperandsProducer("AND", new IllegalArgumentException("")), Main.wiresToProcess.get("c").getSource().getResultProducer());
     }
 
     @Test
@@ -128,7 +128,7 @@ public final class MainTest {
         assertNotNull(Main.wiresToProcess.get("a"));
         assertNotNull(Main.wiresToProcess.get("b"));
         assertNotNull(Main.wiresToProcess.get("c"));
-        assertEquals(Main.rShiftResultProducer, Main.wiresToProcess.get("c").getSource().getResultProducer());
+        assertEquals(ResultProducerFactory.get2OperandsProducer("RSHIFT", new IllegalArgumentException("")), Main.wiresToProcess.get("c").getSource().getResultProducer());
     }
 
     @Test
@@ -147,7 +147,7 @@ public final class MainTest {
         assertNotNull(Main.wiresToProcess.get("a"));
         assertNotNull(Main.wiresToProcess.get("b"));
         assertNotNull(Main.wiresToProcess.get("c"));
-        assertEquals(Main.lShiftResultProducer, Main.wiresToProcess.get("c").getSource().getResultProducer());
+        assertEquals(ResultProducerFactory.get2OperandsProducer("LSHIFT", new IllegalArgumentException("")), Main.wiresToProcess.get("c").getSource().getResultProducer());
     }
 
     @Test
@@ -186,7 +186,7 @@ public final class MainTest {
         Wire input2 = new Wire("");
         input2.setSignal((char)456);
 
-        assertEquals((long)Main.andResultProducer.apply(input1, input2), 72);
+        assertEquals((long)ResultProducerFactory.get2OperandsProducer("AND", new IllegalArgumentException("")).apply(input1, input2), 72);
     }
 
     @Test
@@ -198,7 +198,7 @@ public final class MainTest {
         Wire input2 = new Wire("");
         input2.setSignal((char)456);
 
-        assertEquals((long)Main.orResultProducer.apply(input1, input2), 507);
+        assertEquals((long)ResultProducerFactory.get2OperandsProducer("OR", new IllegalArgumentException("")).apply(input1, input2), 507);
     }
 
     @Test
@@ -210,7 +210,7 @@ public final class MainTest {
         Wire input2 = new Wire("");
         input2.setSignal((char)2);
 
-        assertEquals((long)Main.lShiftResultProducer.apply(input1, input2), 492);
+        assertEquals((long)ResultProducerFactory.get2OperandsProducer("LSHIFT", new IllegalArgumentException("")).apply(input1, input2), 492);
     }
 
     @Test
@@ -222,7 +222,7 @@ public final class MainTest {
         Wire input2 = new Wire("");
         input2.setSignal((char)2);
 
-        assertEquals((long)Main.rShiftResultProducer.apply(input1, input2), 114);
+        assertEquals((long)ResultProducerFactory.get2OperandsProducer("RSHIFT", new IllegalArgumentException("")).apply(input1, input2), 114);
     }
 
     @Test
@@ -231,6 +231,6 @@ public final class MainTest {
         Wire input1 = new Wire("");
         input1.setSignal((char)123);
 
-        assertEquals((long)Main.notResultProducer.apply(input1, null), 65412);
+        assertEquals((long)ResultProducerFactory.getNotResultProducer().apply(input1, null), 65412);
     }
 }

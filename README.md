@@ -20,7 +20,8 @@ Decided to use one Gate class and through delegation change algorithm of produci
   - Improved tests
   - Added comments
   - Added command-line arguments
-11. Wrote README file
-12. Read about Gradle. Updated build.gradle to:
+11. Wrote README file. Made 5th commit.
+12. Read about Gradle. Made 6th commit. Updated build.gradle to:
   - output test results to console as was specified in requirements
   - add Main-Class attribute to manifest
+13. Created factory for ResultProducers. Made 7th commit.

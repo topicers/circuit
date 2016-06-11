@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 /**
@@ -13,12 +12,6 @@ import java.util.stream.Stream;
  */
 public final class Main {
     static final String IN_FILENAME = "input.txt";
-    static final BiFunction<Wire, Wire, Character> andResultProducer = (input1, input2) -> (char)(input1.getSignal() & input2.getSignal());
-    static final BiFunction<Wire, Wire, Character> orResultProducer = (input1, input2) -> (char)(input1.getSignal() | input2.getSignal());
-    static final BiFunction<Wire, Wire, Character> lShiftResultProducer = (input1, input2) -> (char)(input1.getSignal() << input2.getSignal());
-    static final BiFunction<Wire, Wire, Character> rShiftResultProducer = (input1, input2) -> (char)(input1.getSignal() >> input2.getSignal());
-    static final BiFunction<Wire, Wire, Character> notResultProducer = (input1, input2) -> (char)(~input1.getSignal());
-    static final BiFunction<Wire, Wire, Character> sameResultProducer = (input1, input2) -> input1.getSignal();
     static final Map<String, Wire> wiresToProcess = new HashMap<>();
     private static final Map<String, Wire> constWires = new HashMap<>();
     //used when we have no second operand
@@ -33,6 +26,7 @@ public final class Main {
     public static void main(String[] args) throws IOException {
         final String inputFileName;
         final String resultWireId;
+        //get predefined filename and resulting wire from command line args or use default values
         if (args.length == 2)
         {
             inputFileName = args[0];
@@ -59,7 +53,7 @@ public final class Main {
             wiresToProcess.forEach((id, wire) -> wire.process());
         }
 
-        System.out.println(((int)resultWire.getSignal()));
+        System.out.println(("Result is: " + (int)resultWire.getSignal()));
     }
 
     /*
@@ -79,36 +73,23 @@ public final class Main {
             case 2:
                 //parse line like: 2 -> c, k -> c
                 outputWire = getWire(operands[1]);
-                outputWire.setSource(new Gate(getWire(operands[0]), zeroWire, outputWire, sameResultProducer));
+                outputWire.setSource(new Gate(getWire(operands[0]), zeroWire, outputWire, ResultProducerFactory.getSameResultProducer()));
                 break;
             //parse line like: NOT 2 -> ll, NOT lk -> ll
             case 3:
                 if (!operands[0].equals("NOT")) throw exception;
                 outputWire = getWire(operands[2]);
-                outputWire.setSource(new Gate(getWire(operands[1]), zeroWire, outputWire, notResultProducer));
+                outputWire.setSource(new Gate(getWire(operands[1]), zeroWire, outputWire, ResultProducerFactory.getNotResultProducer()));
                 break;
             //parse line like: af OP ah -> ai, 2 OP ah -> ai, af OP 2 -> ai, 2 OP 2 -> ai
             case 4:
-                BiFunction<Wire, Wire, Character> resultProducer;
-                switch(operands[1])
-                {
-                    case "OR":
-                        resultProducer = orResultProducer;
-                        break;
-                    case "AND":
-                        resultProducer = andResultProducer;
-                        break;
-                    case "LSHIFT":
-                        resultProducer = lShiftResultProducer;
-                        break;
-                    case "RSHIFT":
-                        resultProducer = rShiftResultProducer;
-                        break;
-                    default:
-                        throw exception;
-                }
                 outputWire = getWire(operands[3]);
-                outputWire.setSource(new Gate(getWire(operands[0]), getWire(operands[2]), outputWire, resultProducer));
+                outputWire.setSource(new Gate(
+                        getWire(operands[0]),
+                        getWire(operands[2]),
+                        outputWire,
+                        ResultProducerFactory.get2OperandsProducer(operands[1], exception)
+                ));
                 break;
             default:
                 throw exception;
