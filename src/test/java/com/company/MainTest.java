@@ -16,7 +16,7 @@ public class MainTest {
     public void processSampleFile() throws IOException
     {
         Main.main(null);
-        assertEquals(956, (int)Main.wires.get("a").getSignal());
+        assertEquals(40149, (int)Main.wires.get("a").getSignal());
     }
 
     @Test
