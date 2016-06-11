@@ -25,3 +25,4 @@ Decided to use one Gate class and through delegation change algorithm of produci
   - output test results to console as was specified in requirements
   - add Main-Class attribute to manifest
 13. Created factory for ResultProducers. Made 7th commit.
+14. Created WireHolder. Made 8th commit.

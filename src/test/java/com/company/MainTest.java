@@ -16,14 +16,14 @@ public final class MainTest {
     @Before
     public void initialize() {
         //different tests can have wires with the same ids, and processSampleFile produces many wires. So avoid conflicts between them.
-        Main.wiresToProcess.clear();
+        WireHolder.clearWiresToProcess();
     }
 
     @Test
     public void processSampleFile() throws IOException
     {
         Main.main(new String[]{});
-        assertEquals(40149, (int)Main.wiresToProcess.get("a").getSignal());
+        assertEquals(40149, (int)WireHolder.getWire("a").getSignal());
     }
 
     @Test
@@ -36,15 +36,15 @@ public final class MainTest {
     @Test
     public void getWireId()
     {
-        assertEquals(Main.getWire("a"), Main.getWire("a"));
+        assertEquals(WireHolder.getWire("a"), WireHolder.getWire("a"));
     }
 
     @Test
     public void getWireConst()
     {
-        final Wire wire = Main.getWire("2");
+        final Wire wire = WireHolder.getWire("2");
 
-        assertEquals(wire, Main.getWire("2"));
+        assertEquals(wire, WireHolder.getWire("2"));
         assertEquals(2, (int)wire.getSignal());
     }
 
@@ -52,111 +52,111 @@ public final class MainTest {
     public void parseLineValue()
     {
         Main.parseLine("0 -> a");
-        Main.wiresToProcess.get("a").process();
-        assertEquals(0, (int)Main.wiresToProcess.get("a").getSignal());
+        WireHolder.getWire("a").process();
+        assertEquals(0, (int)WireHolder.getWire("a").getSignal());
     }
 
     @Test
     public void parseLineWireToWire()
     {
         Main.parseLine("a -> b");
-        assertNotNull(Main.wiresToProcess.get("a"));
-        assertNotNull(Main.wiresToProcess.get("b"));
-        assertEquals(ResultProducerFactory.getSameResultProducer(), Main.wiresToProcess.get("b").getSource().getResultProducer());
+        assertNotNull(WireHolder.getWire("a"));
+        assertNotNull(WireHolder.getWire("b"));
+        assertEquals(ResultProducerFactory.getSameResultProducer(), WireHolder.getWire("b").getSource().getResultProducer());
     }
 
     @Test
     public void parseLineNotId()
     {
         Main.parseLine("NOT a -> b");
-        assertNotNull(Main.wiresToProcess.get("a"));
-        assertNotNull(Main.wiresToProcess.get("b"));
-        assertEquals(ResultProducerFactory.getNotResultProducer(), Main.wiresToProcess.get("b").getSource().getResultProducer());
+        assertNotNull(WireHolder.getWire("a"));
+        assertNotNull(WireHolder.getWire("b"));
+        assertEquals(ResultProducerFactory.getNotResultProducer(), WireHolder.getWire("b").getSource().getResultProducer());
     }
 
     @Test
     public void parseLineNotConst()
     {
         Main.parseLine("NOT 123 -> a");
-        assertNotNull(Main.wiresToProcess.get("a"));
-        Main.wiresToProcess.get("a").process();
-        assertEquals(65412, (int)Main.wiresToProcess.get("a").getSignal());
+        assertNotNull(WireHolder.getWire("a"));
+        WireHolder.getWire("a").process();
+        assertEquals(65412, (int)WireHolder.getWire("a").getSignal());
     }
 
     @Test
     public void parseLineOr()
     {
         Main.parseLine("a OR b -> c");
-        assertNotNull(Main.wiresToProcess.get("a"));
-        assertNotNull(Main.wiresToProcess.get("b"));
-        assertNotNull(Main.wiresToProcess.get("c"));
-        assertEquals(ResultProducerFactory.get2OperandsProducer("OR", new IllegalArgumentException("")), Main.wiresToProcess.get("c").getSource().getResultProducer());
+        assertNotNull(WireHolder.getWire("a"));
+        assertNotNull(WireHolder.getWire("b"));
+        assertNotNull(WireHolder.getWire("c"));
+        assertEquals(ResultProducerFactory.get2OperandsProducer("OR", new IllegalArgumentException("")), WireHolder.getWire("c").getSource().getResultProducer());
     }
 
     @Test
     public void parseLineOrConst()
     {
         Main.parseLine("123 OR 456 -> c");
-        assertNotNull(Main.wiresToProcess.get("c"));
-        Main.wiresToProcess.get("c").process();
-        assertEquals(507, (int)Main.wiresToProcess.get("c").getSignal());
+        assertNotNull(WireHolder.getWire("c"));
+        WireHolder.getWire("c").process();
+        assertEquals(507, (int)WireHolder.getWire("c").getSignal());
     }
 
     @Test
     public void parseLineAnd()
     {
         Main.parseLine("a AND b -> c");
-        assertNotNull(Main.wiresToProcess.get("a"));
-        assertNotNull(Main.wiresToProcess.get("b"));
-        assertNotNull(Main.wiresToProcess.get("c"));
-        assertEquals(ResultProducerFactory.get2OperandsProducer("AND", new IllegalArgumentException("")), Main.wiresToProcess.get("c").getSource().getResultProducer());
+        assertNotNull(WireHolder.getWire("a"));
+        assertNotNull(WireHolder.getWire("b"));
+        assertNotNull(WireHolder.getWire("c"));
+        assertEquals(ResultProducerFactory.get2OperandsProducer("AND", new IllegalArgumentException("")), WireHolder.getWire("c").getSource().getResultProducer());
     }
 
     @Test
     public void parseLineAndConst()
     {
         Main.parseLine("123 AND 456 -> c");
-        assertNotNull(Main.wiresToProcess.get("c"));
-        Main.wiresToProcess.get("c").process();
-        assertEquals(72, (int)Main.wiresToProcess.get("c").getSignal());
+        assertNotNull(WireHolder.getWire("c"));
+        WireHolder.getWire("c").process();
+        assertEquals(72, (int)WireHolder.getWire("c").getSignal());
     }
 
     @Test
     public void parseLineRshift()
     {
         Main.parseLine("a RSHIFT b -> c");
-        assertNotNull(Main.wiresToProcess.get("a"));
-        assertNotNull(Main.wiresToProcess.get("b"));
-        assertNotNull(Main.wiresToProcess.get("c"));
-        assertEquals(ResultProducerFactory.get2OperandsProducer("RSHIFT", new IllegalArgumentException("")), Main.wiresToProcess.get("c").getSource().getResultProducer());
+        assertNotNull(WireHolder.getWire("a"));
+        assertNotNull(WireHolder.getWire("b"));
+        assertNotNull(WireHolder.getWire("c"));
+        assertEquals(ResultProducerFactory.get2OperandsProducer("RSHIFT", new IllegalArgumentException("")), WireHolder.getWire("c").getSource().getResultProducer());
     }
 
     @Test
     public void parseLineRshiftConst()
     {
         Main.parseLine("456 RSHIFT 2 -> c");
-        assertNotNull(Main.wiresToProcess.get("c"));
-        Main.wiresToProcess.get("c").process();
-        assertEquals(114, (int)Main.wiresToProcess.get("c").getSignal());
+        assertNotNull(WireHolder.getWire("c"));
+        WireHolder.getWire("c").process();
+        assertEquals(114, (int)WireHolder.getWire("c").getSignal());
     }
 
     @Test
     public void parseLineLshift()
     {
         Main.parseLine("a LSHIFT b -> c");
-        assertNotNull(Main.wiresToProcess.get("a"));
-        assertNotNull(Main.wiresToProcess.get("b"));
-        assertNotNull(Main.wiresToProcess.get("c"));
-        assertEquals(ResultProducerFactory.get2OperandsProducer("LSHIFT", new IllegalArgumentException("")), Main.wiresToProcess.get("c").getSource().getResultProducer());
+        assertNotNull(WireHolder.getWire("a"));
+        assertNotNull(WireHolder.getWire("b"));
+        assertNotNull(WireHolder.getWire("c"));
+        assertEquals(ResultProducerFactory.get2OperandsProducer("LSHIFT", new IllegalArgumentException("")), WireHolder.getWire("c").getSource().getResultProducer());
     }
 
     @Test
     public void parseLineLshiftConst()
     {
         Main.parseLine("123 LSHIFT 2 -> c");
-        assertNotNull(Main.wiresToProcess.get("c"));
-        Main.wiresToProcess.get("c").process();
-        assertEquals(492, (int)Main.wiresToProcess.get("c").getSignal());
+        assertNotNull(WireHolder.getWire("c"));
+        WireHolder.getWire("c").process();
+        assertEquals(492, (int)WireHolder.getWire("c").getSignal());
     }
 
     @Test(expected = IllegalArgumentException.class)

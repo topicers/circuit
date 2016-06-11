@@ -3,8 +3,6 @@ package com.company;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -12,16 +10,7 @@ import java.util.stream.Stream;
  */
 public final class Main {
     static final String IN_FILENAME = "input.txt";
-    static final Map<String, Wire> wiresToProcess = new HashMap<>();
-    private static final Map<String, Wire> constWires = new HashMap<>();
-    //used when we have no second operand
-    private static final Wire zeroWire;
     static final boolean IS_DEBUG = true;
-
-    static {
-        zeroWire = new Wire("");
-        zeroWire.setSignal((char)0);
-    }
 
     public static void main(String[] args) throws IOException {
         final String inputFileName;
@@ -46,11 +35,11 @@ public final class Main {
 
         //calculate signals from wiresToProcess, until we get signal for Wire "a"
         int counter = 0;
-        final Wire resultWire = wiresToProcess.get(resultWireId);
+        final Wire resultWire = WireHolder.getWire(resultWireId);
         while(!resultWire.hasSignal())
         {
             if (Main.IS_DEBUG) System.out.println("-- Iteration #: "+(++counter));
-            wiresToProcess.forEach((id, wire) -> wire.process());
+            WireHolder.processAllWires();
         }
 
         System.out.println(("Result is: " + (int)resultWire.getSignal()));
@@ -58,7 +47,7 @@ public final class Main {
 
     /*
         1) Parse one line from input file
-        2) Fill wiresToProcess and constWires maps
+        2) Fill WireHolder.wiresToProcess and WireHolder.constWires maps
         3) Create and set sources for wires
 
         Throw IllegalArgumentException in case of parsing error
@@ -72,52 +61,27 @@ public final class Main {
         {
             case 2:
                 //parse line like: 2 -> c, k -> c
-                outputWire = getWire(operands[1]);
-                outputWire.setSource(new Gate(getWire(operands[0]), zeroWire, outputWire, ResultProducerFactory.getSameResultProducer()));
+                outputWire = WireHolder.getWire(operands[1]);
+                outputWire.setSource(new Gate(WireHolder.getWire(operands[0]), WireHolder.getZeroWire(), outputWire, ResultProducerFactory.getSameResultProducer()));
                 break;
             //parse line like: NOT 2 -> ll, NOT lk -> ll
             case 3:
                 if (!operands[0].equals("NOT")) throw exception;
-                outputWire = getWire(operands[2]);
-                outputWire.setSource(new Gate(getWire(operands[1]), zeroWire, outputWire, ResultProducerFactory.getNotResultProducer()));
+                outputWire = WireHolder.getWire(operands[2]);
+                outputWire.setSource(new Gate(WireHolder.getWire(operands[1]), WireHolder.getZeroWire(), outputWire, ResultProducerFactory.getNotResultProducer()));
                 break;
             //parse line like: af OP ah -> ai, 2 OP ah -> ai, af OP 2 -> ai, 2 OP 2 -> ai
             case 4:
-                outputWire = getWire(operands[3]);
+                outputWire = WireHolder.getWire(operands[3]);
                 outputWire.setSource(new Gate(
-                        getWire(operands[0]),
-                        getWire(operands[2]),
+                        WireHolder.getWire(operands[0]),
+                        WireHolder.getWire(operands[2]),
                         outputWire,
                         ResultProducerFactory.get2OperandsProducer(operands[1], exception)
                 ));
                 break;
             default:
                 throw exception;
-        }
-    }
-
-    /*
-         wiresToProcess contains Wires with no signal, and they need to be processed and searched, as Wire
-         can provide input signal to many Gates.
-
-         constWires contains Wires with signal, so they don't need to be processed, and they can be cached.
-
-        If id is numeric compute it from constWires, otherwise compute it from wiresToProcess
-     */
-    static Wire getWire(String id)
-    {
-        try
-        {
-            Character constantSignal = (char)Integer.parseInt(id);
-            return constWires.computeIfAbsent(id, wid -> {
-                Wire wire = new Wire(wid);
-                wire.setSignal(constantSignal);
-                return wire;
-            });
-        }
-        catch(NumberFormatException e)
-        {
-            return wiresToProcess.computeIfAbsent(id, Wire::new);
         }
     }
 }
