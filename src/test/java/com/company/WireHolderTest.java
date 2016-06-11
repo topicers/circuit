@@ -1,5 +1,6 @@
 package com.company;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -9,8 +10,17 @@ import static org.junit.Assert.*;
  */
 public class WireHolderTest {
     @Test
-    public void getWire() throws Exception {
-
+    public void getWireId()
+    {
+        assertEquals(WireHolder.getWire("a"), WireHolder.getWire("a"));
     }
 
+    @Test
+    public void getWireConst()
+    {
+        final Wire wire = WireHolder.getWire("2");
+
+        assertEquals(wire, WireHolder.getWire("2"));
+        assertEquals(2, (int)wire.getSignal());
+    }
 }

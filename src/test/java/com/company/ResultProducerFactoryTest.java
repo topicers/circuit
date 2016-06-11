@@ -31,4 +31,61 @@ public class ResultProducerFactoryTest {
     {
         ResultProducerFactory.get2OperandsProducer("ORR", new IllegalArgumentException(""));
     }
+
+    @Test
+    public void andResultProducer()
+    {
+        Wire input1 = new Wire("");
+        input1.setSignal((char)123);
+
+        Wire input2 = new Wire("");
+        input2.setSignal((char)456);
+
+        assertEquals((long)ResultProducerFactory.get2OperandsProducer("AND", new IllegalArgumentException("")).apply(input1, input2), 72);
+    }
+
+    @Test
+    public void orResultProducer()
+    {
+        Wire input1 = new Wire("");
+        input1.setSignal((char)123);
+
+        Wire input2 = new Wire("");
+        input2.setSignal((char)456);
+
+        assertEquals((long)ResultProducerFactory.get2OperandsProducer("OR", new IllegalArgumentException("")).apply(input1, input2), 507);
+    }
+
+    @Test
+    public void lShiftResultProducer()
+    {
+        Wire input1 = new Wire("");
+        input1.setSignal((char)123);
+
+        Wire input2 = new Wire("");
+        input2.setSignal((char)2);
+
+        assertEquals((long)ResultProducerFactory.get2OperandsProducer("LSHIFT", new IllegalArgumentException("")).apply(input1, input2), 492);
+    }
+
+    @Test
+    public void rShiftResultProducer()
+    {
+        Wire input1 = new Wire("");
+        input1.setSignal((char)456);
+
+        Wire input2 = new Wire("");
+        input2.setSignal((char)2);
+
+        assertEquals((long)ResultProducerFactory.get2OperandsProducer("RSHIFT", new IllegalArgumentException("")).apply(input1, input2), 114);
+    }
+
+    @Test
+    public void notResultProducer()
+    {
+        Wire input1 = new Wire("");
+        input1.setSignal((char)123);
+
+        assertEquals((long)ResultProducerFactory.getNotResultProducer().apply(input1, null), 65412);
+    }
 }

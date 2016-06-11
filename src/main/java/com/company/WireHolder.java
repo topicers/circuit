@@ -22,9 +22,15 @@ final class WireHolder {
         return zeroWire;
     }
 
-    static void processAllWires()
+    static void obtainResults(Wire resultWire)
     {
-        wiresToProcess.forEach((id, wire) -> wire.process());
+        //calculate signals from wiresToProcess, until we get signal for Wire "a"
+        int counter = 0;
+        while(!resultWire.hasSignal())
+        {
+            if (Main.IS_DEBUG) System.out.println("-- Iteration #: "+(++counter));
+            wiresToProcess.forEach((id, wire) -> wire.process());
+        }
     }
 
     static void clearWiresToProcess()
