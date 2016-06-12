@@ -15,6 +15,6 @@ public final class MainTest {
     public void processSampleFile() throws IOException
     {
         Main.main(new String[]{});
-        assertThat((int)WireHolder.getWire("a").getSignal(), is(40149));
+        assertThat((int)Parser.getWire("a").getSignal(), is(40149));
     }
 }

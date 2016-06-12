@@ -28,3 +28,4 @@ Decided to use one Gate class and through delegation change algorithm of produci
 14. Created WireHolder. Made 8th commit.
 15. Moved code for parsing to Parser. Made 9th commit. 
 16. Tests were rewritten using assertThat and Hamcrest. Made 10th commit.
+17. Moved some code to Parser - made WireHolder more cohesive. Parser is now accepts only lowercase wire identifiers as specified in task. Made 11th commit.

@@ -3,12 +3,15 @@ package com.company;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
  * For parsing input file
  */
 final class Parser {
+    private static final Pattern idPattern = Pattern.compile("[a-z]+");
+
     static void parseFile(String fileName) throws IOException
     {
         //parse all lines
@@ -34,27 +37,48 @@ final class Parser {
         {
             case 2:
                 //parse line like: 2 -> c, k -> c
-                outputWire = WireHolder.getWire(operands[1]);
-                outputWire.setSource(new Gate(WireHolder.getWire(operands[0]), WireHolder.getZeroWire(), outputWire, ResultProducerFactory.getSameResultProducer()));
+                outputWire = getWire(operands[1]);
+                outputWire.setSource(new Gate(getWire(operands[0]), WireHolder.getZeroWire(), outputWire, ResultProducerFactory.getSameResultProducer()));
                 break;
             //parse line like: NOT 2 -> ll, NOT lk -> ll
             case 3:
                 if (!operands[0].equals("NOT")) throw exception;
-                outputWire = WireHolder.getWire(operands[2]);
-                outputWire.setSource(new Gate(WireHolder.getWire(operands[1]), WireHolder.getZeroWire(), outputWire, ResultProducerFactory.getNotResultProducer()));
+                outputWire = getWire(operands[2]);
+                outputWire.setSource(new Gate(getWire(operands[1]), WireHolder.getZeroWire(), outputWire, ResultProducerFactory.getNotResultProducer()));
                 break;
             //parse line like: af OP ah -> ai, 2 OP ah -> ai, af OP 2 -> ai, 2 OP 2 -> ai
             case 4:
-                outputWire = WireHolder.getWire(operands[3]);
+                outputWire = getWire(operands[3]);
                 outputWire.setSource(new Gate(
-                        WireHolder.getWire(operands[0]),
-                        WireHolder.getWire(operands[2]),
+                        getWire(operands[0]),
+                        getWire(operands[2]),
                         outputWire,
                         ResultProducerFactory.get2OperandsProducer(operands[1], exception)
                 ));
                 break;
             default:
                 throw exception;
+        }
+    }
+
+    /*
+    wiresToProcess contains Wires with no signal, and they need to be processed and searched, as Wire
+    can provide input signal to many Gates.
+
+    constWires contains Wires with signal, so they don't need to be processed, and they can be cached.
+
+    If id is numeric compute it from constWires, otherwise compute it from wiresToProcess
+*/
+    static Wire getWire(String id)
+    {
+        try
+        {
+            return WireHolder.getConstWire(id, Integer.parseInt(id));
+        }
+        catch(NumberFormatException e)
+        {
+            if (!idPattern.matcher(id).matches()) throw new IllegalArgumentException("Invalid id is detected <"+id+">");
+            return WireHolder.getWireToProcess(id);
         }
     }
 }

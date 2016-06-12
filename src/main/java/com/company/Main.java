@@ -6,7 +6,7 @@ import java.io.IOException;
  * Main class
  */
 public final class Main {
-    static final String IN_FILENAME = "input.txt";
+    private static final String IN_FILENAME = "input.txt";
     static final boolean IS_DEBUG = true;
 
     public static void main(String[] args) throws IOException {
@@ -26,7 +26,7 @@ public final class Main {
 
         Parser.parseFile(inputFileName);
 
-        final Wire resultWire = WireHolder.getWire(resultWireId);
+        final Wire resultWire = WireHolder.getWireToProcess(resultWireId);
         WireHolder.obtainResults(resultWire);
         System.out.println(("Result is: " + (int)resultWire.getSignal()));
     }

@@ -38,33 +38,22 @@ final class WireHolder {
         wiresToProcess.clear();
     }
 
-    /*
-        wiresToProcess contains Wires with no signal, and they need to be processed and searched, as Wire
-        can provide input signal to many Gates.
-
-        constWires contains Wires with signal, so they don't need to be processed, and they can be cached.
-
-        If id is numeric compute it from constWires, otherwise compute it from wiresToProcess
-    */
-    static Wire getWire(String id)
+    static Wire getConstWire(String id, int idVal)
     {
-        try
-        {
-            Character constantSignal = (char)Integer.parseInt(id);
-            return constWires.computeIfAbsent(id, wid -> {
-                Wire wire = new Wire(wid);
-                wire.setSignal(constantSignal);
-                return wire;
-            });
-        }
-        catch(NumberFormatException e)
-        {
-            return wiresToProcess.computeIfAbsent(id, Wire::new);
-        }
+        return constWires.computeIfAbsent(id, wid -> {
+            Wire wire = new Wire(wid);
+            wire.setSignal((char)idVal);
+            return wire;
+        });
+    }
+
+    static Wire getWireToProcess(String id)
+    {
+        return wiresToProcess.computeIfAbsent(id, Wire::new);
     }
 
     //Used only for tests
-    static Wire getWireToProcess(String id)
+    static Wire getWireToProcessTest(String id)
     {
         return wiresToProcess.get(id);
     }
