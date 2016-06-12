@@ -10,7 +10,8 @@ import java.util.stream.Stream;
  * For parsing input file
  */
 final class Parser {
-    private static final Pattern idPattern = Pattern.compile("[a-z]+");
+    private static final Pattern ID_PATTERN = Pattern.compile("[a-z]+");
+    private static final Pattern SPLIT_PATTERN = Pattern.compile(" -> |\\s");
 
     static void parseFile(String fileName) throws IOException
     {
@@ -30,7 +31,7 @@ final class Parser {
     */
     static void parseLine(String line)
     {
-        final String[] operands = line.split(" -> |\\s");
+        final String[] operands = SPLIT_PATTERN.split(line);
         final IllegalArgumentException exception = new IllegalArgumentException("Invalid line <"+line+"> is detected.");
         Wire outputWire;
         switch(operands.length)
@@ -70,7 +71,7 @@ final class Parser {
         }
         catch(NumberFormatException e)
         {
-            if (!idPattern.matcher(id).matches()) throw new IllegalArgumentException("Invalid id is detected <"+id+">");
+            if (!ID_PATTERN.matcher(id).matches()) throw new IllegalArgumentException("Invalid id is detected <"+id+">");
             return WireHolder.getWireToProcess(id);
         }
     }

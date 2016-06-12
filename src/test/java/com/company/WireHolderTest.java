@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Test for WireHolder
  */
-public class WireHolderTest {
+public final class WireHolderTest {
 
     @Before
     public void initialize() {
@@ -21,7 +21,7 @@ public class WireHolderTest {
     public void getConstWire() throws Exception {
         Wire wire = WireHolder.getConstWire("2", 2);
         assertThat(WireHolder.getConstWire("2", 2), is(wire));
-        assertThat((int)wire.getSignal(), is(2));
+        assertThat((int)wire.getSignal().get(), is(2));
     }
 
     @Test

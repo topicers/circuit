@@ -17,16 +17,16 @@ final class WireHolder {
     private static final Map<String, Wire> wiresToProcess = new HashMap<>();
     private static final Map<String, Wire> constWires = new HashMap<>();
     //used when we have no second operand
-    private static final Wire zeroWire;
+    private static final Wire ZERO_WIRE;
 
     static {
-        zeroWire = new Wire("");
-        zeroWire.setSignal((char)0);
+        ZERO_WIRE = new Wire("");
+        ZERO_WIRE.setSignal((char)0);
     }
 
     static Wire getZeroWire()
     {
-        return zeroWire;
+        return ZERO_WIRE;
     }
 
     static void obtainResults(Wire resultWire)

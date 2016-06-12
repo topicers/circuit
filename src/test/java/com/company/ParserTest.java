@@ -9,7 +9,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Tests for Parser
  */
-public class ParserTest {
+public final class ParserTest {
     @Before
     public void initialize() {
         //different tests can have wires with the same ids. So avoid conflicts between them.
@@ -21,7 +21,7 @@ public class ParserTest {
     {
         Parser.parseLine("0 -> a");
         Parser.getWire("a").process();
-        assertThat((int)Parser.getWire("a").getSignal(), is(0));
+        assertThat((int)Parser.getWire("a").getSignal().get(), is(0));
     }
 
     @Test
@@ -30,7 +30,7 @@ public class ParserTest {
         Parser.parseLine("a -> b");
         assertThat(WireHolder.getWireToProcessTest("a"), notNullValue());
         assertThat(WireHolder.getWireToProcessTest("b"), notNullValue());
-        assertThat(Parser.getWire("b").getSource().getResultProducer(), is(ResultProducerFactory.getSameResultProducer()));
+        assertThat(Parser.getWire("b").getSource().get().getResultProducer(), is(ResultProducerFactory.getSameResultProducer()));
     }
 
     @Test
@@ -39,7 +39,7 @@ public class ParserTest {
         Parser.parseLine("NOT a -> b");
         assertThat(WireHolder.getWireToProcessTest("a"), notNullValue());
         assertThat(WireHolder.getWireToProcessTest("b"), notNullValue());
-        assertThat(Parser.getWire("b").getSource().getResultProducer(), is(ResultProducerFactory.getNotResultProducer()));
+        assertThat(Parser.getWire("b").getSource().get().getResultProducer(), is(ResultProducerFactory.getNotResultProducer()));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class ParserTest {
         Parser.parseLine("NOT 123 -> a");
         assertThat(WireHolder.getWireToProcessTest("a"), notNullValue());
         Parser.getWire("a").process();
-        assertThat((int)Parser.getWire("a").getSignal(), is(65412));
+        assertThat((int)Parser.getWire("a").getSignal().get(), is(65412));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ParserTest {
         assertThat(WireHolder.getWireToProcessTest("b"), notNullValue());
         assertThat(WireHolder.getWireToProcessTest("c"), notNullValue());
         assertThat(
-                Parser.getWire("c").getSource().getResultProducer(),
+                Parser.getWire("c").getSource().get().getResultProducer(),
                 is(ResultProducerFactory.get2OperandsProducer("OR", new IllegalArgumentException("")))
         );
     }
@@ -70,7 +70,7 @@ public class ParserTest {
         Parser.parseLine("123 OR 456 -> c");
         assertThat(WireHolder.getWireToProcessTest("c"), notNullValue());
         Parser.getWire("c").process();
-        assertThat((int)Parser.getWire("c").getSignal(), is(507));
+        assertThat((int)Parser.getWire("c").getSignal().get(), is(507));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class ParserTest {
         assertThat(WireHolder.getWireToProcessTest("b"), notNullValue());
         assertThat(WireHolder.getWireToProcessTest("c"), notNullValue());
         assertThat(
-                Parser.getWire("c").getSource().getResultProducer(),
+                Parser.getWire("c").getSource().get().getResultProducer(),
                 is(ResultProducerFactory.get2OperandsProducer("AND", new IllegalArgumentException("")))
         );
     }
@@ -92,7 +92,7 @@ public class ParserTest {
         Parser.parseLine("123 AND 456 -> c");
         assertThat(WireHolder.getWireToProcessTest("c"), notNullValue());
         Parser.getWire("c").process();
-        assertThat((int)Parser.getWire("c").getSignal(), is(72));
+        assertThat((int)Parser.getWire("c").getSignal().get(), is(72));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class ParserTest {
         assertThat(WireHolder.getWireToProcessTest("b"), notNullValue());
         assertThat(WireHolder.getWireToProcessTest("c"), notNullValue());
         assertThat(
-                Parser.getWire("c").getSource().getResultProducer(),
+                Parser.getWire("c").getSource().get().getResultProducer(),
                 is(ResultProducerFactory.get2OperandsProducer("RSHIFT", new IllegalArgumentException("")))
         );
     }
@@ -114,7 +114,7 @@ public class ParserTest {
         Parser.parseLine("456 RSHIFT 2 -> c");
         assertThat(WireHolder.getWireToProcessTest("c"), notNullValue());
         Parser.getWire("c").process();
-        assertThat((int)Parser.getWire("c").getSignal(), is(114));
+        assertThat((int)Parser.getWire("c").getSignal().get(), is(114));
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ParserTest {
         assertThat(WireHolder.getWireToProcessTest("b"), notNullValue());
         assertThat(WireHolder.getWireToProcessTest("c"), notNullValue());
         assertThat(
-                Parser.getWire("c").getSource().getResultProducer(),
+                Parser.getWire("c").getSource().get().getResultProducer(),
                 is(ResultProducerFactory.get2OperandsProducer("LSHIFT", new IllegalArgumentException("")))
         );
     }
@@ -136,7 +136,7 @@ public class ParserTest {
         Parser.parseLine("123 LSHIFT 2 -> c");
         assertThat(WireHolder.getWireToProcessTest("c"), notNullValue());
         Parser.getWire("c").process();
-        assertThat((int)Parser.getWire("c").getSignal(), is(492));
+        assertThat((int)Parser.getWire("c").getSignal().get(), is(492));
     }
 
     @Test(expected = IllegalArgumentException.class)

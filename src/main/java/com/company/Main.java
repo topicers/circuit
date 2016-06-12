@@ -5,9 +5,9 @@ import java.io.IOException;
 /**
  * Main class
  */
-public final class Main {
+final class Main {
     private static final String IN_FILENAME = "input.txt";
-    static final boolean IS_DEBUG = true;
+    static final boolean IS_DEBUG = false;
 
     public static void main(String[] args) throws IOException {
         final String inputFileName;
@@ -28,6 +28,6 @@ public final class Main {
 
         final Wire resultWire = WireHolder.getWireToProcess(resultWireId);
         WireHolder.obtainResults(resultWire);
-        System.out.println(("Result is: " + (int)resultWire.getSignal()));
+        System.out.println(("Result is: " + (int)resultWire.getSignal().get()));
     }
 }

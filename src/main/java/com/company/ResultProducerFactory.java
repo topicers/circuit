@@ -6,37 +6,37 @@ import java.util.function.BiFunction;
  * Factory for ResultProducer
  */
 final class ResultProducerFactory {
-    private static final BiFunction<Wire, Wire, Character> andResultProducer = (input1, input2) -> (char)(input1.getSignal() & input2.getSignal());
-    private static final BiFunction<Wire, Wire, Character> orResultProducer = (input1, input2) -> (char)(input1.getSignal() | input2.getSignal());
-    private static final BiFunction<Wire, Wire, Character> lShiftResultProducer = (input1, input2) -> (char)(input1.getSignal() << input2.getSignal());
-    private static final BiFunction<Wire, Wire, Character> rShiftResultProducer = (input1, input2) -> (char)(input1.getSignal() >> input2.getSignal());
-    private static final BiFunction<Wire, Wire, Character> notResultProducer = (input1, input2) -> (char)(~input1.getSignal());
-    private static final BiFunction<Wire, Wire, Character> sameResultProducer = (input1, input2) -> input1.getSignal();
+    private static final BiFunction<Character, Character, Character> AND_RESULT_PRODUCER = (input1, input2) -> (char)(input1 & input2);
+    private static final BiFunction<Character, Character, Character> OR_RESULT_PRODUCER = (input1, input2) -> (char)(input1 | input2);
+    private static final BiFunction<Character, Character, Character> L_SHIFT_RESULT_PRODUCER = (input1, input2) -> (char)(input1 << input2);
+    private static final BiFunction<Character, Character, Character> R_SHIFT_RESULT_PRODUCER = (input1, input2) -> (char)(input1 >> input2);
+    private static final BiFunction<Character, Character, Character> NOT_RESULT_PRODUCER = (input1, input2) -> (char)(~input1);
+    private static final BiFunction<Character, Character, Character> SAME_RESULT_PRODUCER = (input1, input2) -> input1;
 
-    static BiFunction<Wire, Wire, Character> get2OperandsProducer(final String type, IllegalArgumentException exception)
+    static BiFunction<Character, Character, Character> get2OperandsProducer(final String type, IllegalArgumentException exception)
     {
         switch(type)
         {
             case "OR":
-                return orResultProducer;
+                return OR_RESULT_PRODUCER;
             case "AND":
-                return andResultProducer;
+                return AND_RESULT_PRODUCER;
             case "LSHIFT":
-                return lShiftResultProducer;
+                return L_SHIFT_RESULT_PRODUCER;
             case "RSHIFT":
-                return rShiftResultProducer;
+                return R_SHIFT_RESULT_PRODUCER;
             default:
                 throw exception;
         }
     }
 
-    static BiFunction<Wire, Wire, Character> getNotResultProducer()
+    static BiFunction<Character, Character, Character> getNotResultProducer()
     {
-        return notResultProducer;
+        return NOT_RESULT_PRODUCER;
     }
 
-    static BiFunction<Wire, Wire, Character> getSameResultProducer()
+    static BiFunction<Character, Character, Character> getSameResultProducer()
     {
-        return sameResultProducer;
+        return SAME_RESULT_PRODUCER;
     }
 }

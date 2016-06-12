@@ -10,24 +10,24 @@ final class Gate {
     private final Wire input1;
     private final Wire input2;
     private final Wire output;
-    private final BiFunction<Wire, Wire, Character> resultProducer;
+    private final BiFunction<Character, Character, Character> resultProducer;
 
-    Gate(Wire input1, Wire input2, Wire output, BiFunction<Wire, Wire, Character> resultProducer) {
+    Gate(Wire input1, Wire input2, Wire output, BiFunction<Character, Character, Character> resultProducer) {
         this.input1 = input1;
         this.input2 = input2;
         this.output = output;
         this.resultProducer = resultProducer;
     }
 
-    BiFunction<Wire, Wire, Character> getResultProducer() {
+    BiFunction<Character, Character, Character> getResultProducer() {
         return resultProducer;
     }
 
-    //we can calculate output signal only when we have 2 input signals
+    //we can calculate output signal only when we have all input signals
     void produceOutput() {
         if (input1.hasSignal() && input2.hasSignal())
         {
-            output.setSignal(resultProducer.apply(input1, input2));
+            output.setSignal(resultProducer.apply(input1.getSignal().get(), input2.getSignal().get()));
         }
     }
 }

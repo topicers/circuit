@@ -16,6 +16,6 @@ public final class MainTest {
     {
         Wire resultWire = Parser.getWire("a");
         Main.main(new String[]{});
-        assertThat((int)resultWire.getSignal(), is(40149));
+        assertThat((int)resultWire.getSignal().get(), is(40149));
     }
 }

@@ -10,14 +10,14 @@ import static org.junit.Assert.assertThat;
 /**
  * Test for ResultProducerFactory
  */
-public class ResultProducerFactoryTest {
+public final class ResultProducerFactoryTest {
     @Test
     public void get2OperandsProducerDistinct() {
         IllegalArgumentException exception = new IllegalArgumentException("");
-        BiFunction<Wire, Wire, Character> orResultProducer = ResultProducerFactory.get2OperandsProducer("OR", exception);
-        BiFunction<Wire, Wire, Character> andResultProducer = ResultProducerFactory.get2OperandsProducer("AND", exception);
-        BiFunction<Wire, Wire, Character> rShiftResultProducer = ResultProducerFactory.get2OperandsProducer("RSHIFT", exception);
-        BiFunction<Wire, Wire, Character> lShiftResultProducer = ResultProducerFactory.get2OperandsProducer("LSHIFT", exception);
+        BiFunction<Character, Character, Character> orResultProducer = ResultProducerFactory.get2OperandsProducer("OR", exception);
+        BiFunction<Character, Character, Character> andResultProducer = ResultProducerFactory.get2OperandsProducer("AND", exception);
+        BiFunction<Character, Character, Character> rShiftResultProducer = ResultProducerFactory.get2OperandsProducer("RSHIFT", exception);
+        BiFunction<Character, Character, Character> lShiftResultProducer = ResultProducerFactory.get2OperandsProducer("LSHIFT", exception);
 
         assertThat(orResultProducer, not(anyOf(is(andResultProducer), is(rShiftResultProducer), is(lShiftResultProducer))));
         assertThat(andResultProducer, not(anyOf(is(orResultProducer), is(rShiftResultProducer), is(lShiftResultProducer))));
@@ -41,7 +41,7 @@ public class ResultProducerFactoryTest {
         input2.setSignal((char)456);
 
         assertThat(
-                (int)ResultProducerFactory.get2OperandsProducer("AND", new IllegalArgumentException("")).apply(input1, input2),
+                (int)ResultProducerFactory.get2OperandsProducer("AND", new IllegalArgumentException("")).apply(input1.getSignal().get(), input2.getSignal().get()),
                 is(72)
         );
     }
@@ -56,7 +56,7 @@ public class ResultProducerFactoryTest {
         input2.setSignal((char)456);
 
         assertThat(
-                (int)ResultProducerFactory.get2OperandsProducer("OR", new IllegalArgumentException("")).apply(input1, input2),
+                (int)ResultProducerFactory.get2OperandsProducer("OR", new IllegalArgumentException("")).apply(input1.getSignal().get(), input2.getSignal().get()),
                 is(507)
         );
     }
@@ -71,7 +71,7 @@ public class ResultProducerFactoryTest {
         input2.setSignal((char)2);
 
         assertThat(
-                (int)ResultProducerFactory.get2OperandsProducer("LSHIFT", new IllegalArgumentException("")).apply(input1, input2),
+                (int)ResultProducerFactory.get2OperandsProducer("LSHIFT", new IllegalArgumentException("")).apply(input1.getSignal().get(), input2.getSignal().get()),
                 is(492)
         );
     }
@@ -86,7 +86,7 @@ public class ResultProducerFactoryTest {
         input2.setSignal((char)2);
 
         assertThat(
-                (int)ResultProducerFactory.get2OperandsProducer("RSHIFT", new IllegalArgumentException("")).apply(input1, input2),
+                (int)ResultProducerFactory.get2OperandsProducer("RSHIFT", new IllegalArgumentException("")).apply(input1.getSignal().get(), input2.getSignal().get()),
                 is(114)
         );
     }
@@ -98,7 +98,7 @@ public class ResultProducerFactoryTest {
         input1.setSignal((char)123);
 
         assertThat(
-                (int)ResultProducerFactory.getNotResultProducer().apply(input1, null),
+                (int)ResultProducerFactory.getNotResultProducer().apply(input1.getSignal().get(), null),
                 is(65412)
         );
     }
