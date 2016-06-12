@@ -27,3 +27,4 @@ Decided to use one Gate class and through delegation change algorithm of produci
 13. Created factory for ResultProducers. Made 7th commit.
 14. Created WireHolder. Made 8th commit.
 15. Moved code for parsing to Parser. Made 9th commit. 
+16. Tests were rewritten using assertThat and Hamcrest. Made 10th commit.

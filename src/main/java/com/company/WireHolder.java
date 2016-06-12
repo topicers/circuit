@@ -62,4 +62,10 @@ final class WireHolder {
             return wiresToProcess.computeIfAbsent(id, Wire::new);
         }
     }
+
+    //Used only for tests
+    static Wire getWireToProcess(String id)
+    {
+        return wiresToProcess.get(id);
+    }
 }
