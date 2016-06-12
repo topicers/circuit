@@ -1,12 +1,19 @@
 package com.company;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
  * Holds wires
  */
 final class WireHolder {
+    /*
+        wiresToProcess contains Wires with no signal, and they need to be processed and searched, as Wire
+        can provide input signal to many Gates.
+
+        constWires contains Wires with signal, so they don't need to be processed, and they can be cached.
+    */
     private static final Map<String, Wire> wiresToProcess = new HashMap<>();
     private static final Map<String, Wire> constWires = new HashMap<>();
     //used when we have no second operand
@@ -24,12 +31,21 @@ final class WireHolder {
 
     static void obtainResults(Wire resultWire)
     {
-        //calculate signals from wiresToProcess, until we get signal for Wire "a"
+        //calculate signals from wiresToProcess, until we get signal for resultWire
         int counter = 0;
         while(!resultWire.hasSignal())
         {
             if (Main.IS_DEBUG) System.out.println("-- Iteration #: "+(++counter));
-            wiresToProcess.forEach((id, wire) -> wire.process());
+
+            final Iterator<Wire> iter = wiresToProcess.values().iterator();
+            while (iter.hasNext()) {
+                Wire wire = iter.next();
+                wire.process();
+                //if wire has received signal -> exclude it from further processing
+                if (wire.hasSignal()) {
+                    iter.remove();
+                }
+            }
         }
     }
 

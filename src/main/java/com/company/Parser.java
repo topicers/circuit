@@ -61,14 +61,7 @@ final class Parser {
         }
     }
 
-    /*
-    wiresToProcess contains Wires with no signal, and they need to be processed and searched, as Wire
-    can provide input signal to many Gates.
-
-    constWires contains Wires with signal, so they don't need to be processed, and they can be cached.
-
-    If id is numeric compute it from constWires, otherwise compute it from wiresToProcess
-*/
+    //If id is numeric get it from constWires, otherwise get it from wiresToProcess
     static Wire getWire(String id)
     {
         try
